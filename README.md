@@ -34,15 +34,6 @@ Brazilian E-Commerce Public Dataset by Olist: https://www.kaggle.com/datasets/ol
 - Git, GitHub
 
 ## Table Relation
-                                PAYMENTS                  PRODUCTS
-                                   |                         |
-                             (*order_id*)              (*product_id*)
-                                   |                         |
-      REVIEWS -- (*order_id*) -- ORDERS -- (*order_id*) -- ITEMS -- (*product_id*) -- SELLERS
-                                   |                                                    |
-                            (*customer_id*)                                      (*zip_code*)
-                                  |                                                    |
-                              CUSTOMERS ----------------*(zip_code*)-------------GEOLOCATIONS
-
+![image-for-data-model](data-model.png)
 ## Project Status
 Currently in planning and setup phase.
