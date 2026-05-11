@@ -35,5 +35,3 @@ Brazilian E-Commerce Public Dataset by Olist: https://www.kaggle.com/datasets/ol
 
 ## Table Relation
 ![image-for-data-model](data-model.png)
-## Project Status
-Currently in planning and setup phase.
