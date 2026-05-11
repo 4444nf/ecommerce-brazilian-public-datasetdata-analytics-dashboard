@@ -1,8 +1,7 @@
-íimport pandas as pd
+import pandas as pd
 from sqlalchemy import create_engine
-import os
+import configparser
 
-base_path = r"C:\Brazilian_data\project"
 
 file_list = ["olist_customers_dataset.csv",
              "olist_geolocation_dataset.csv",
@@ -14,10 +13,17 @@ file_list = ["olist_customers_dataset.csv",
              "olist_sellers_dataset.csv",
              "product_category_name_translation.csv"]
 
-with open(os.path.join(base_path, "db_connection_info"), "r", encoding="utf-8") as f:
-    db_connection_info = f.read().strip()
+config = configparser.ConfigParser()
+config.read('database.ini')
 
-engine = create_engine(db_connection_info)
+db = config["database"]
+
+connection_string = (
+    f"postgresql+psycopg2://{db['user']}:{db['password']}"
+    f"@{db['host']}:{db['port']}/{db['name']}"
+)
+
+engine = create_engine(connection_string)
 
 
 for file in file_list:
