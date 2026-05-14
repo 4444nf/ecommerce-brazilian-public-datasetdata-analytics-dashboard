@@ -1,0 +1,69 @@
+-- Table keys and relationships - define primary and foreign key constraints for relational integrity
+
+alter table olist_customers_dataset
+add primary key (customer_id)
+
+alter table olist_geolocation_dataset
+add column geolocation_id bigserial
+
+alter table olist_geolocation_dataset
+add primary key (geolocation_id)
+
+alter table olist_order_items_dataset
+add primary key (order_id, order_item_id)
+
+alter table olist_order_payments_dataset
+add primary key (order_id, payment_sequential)
+
+alter table olist_order_reviews_dataset
+add primary key (order_id, review_id)
+
+alter table olist_orders_dataset
+add primary key (order_id)
+
+alter table olist_products_dataset
+add primary key (product_id)
+
+alter table olist_sellers_dataset
+add primary key (seller_id)
+
+alter table product_category_name_translation
+add column name_id BIGSERIAL
+
+alter table product_category_name_translation
+add primary key (name_id)
+
+
+alter table olist_order_reviews_dataset
+add constraint fk_review_order
+foreign key (order_id)
+references olist_orders_dataset(order_id)
+
+alter table olist_orders_dataset
+add constraint fk_order_customer
+foreign key (customer_id)
+references olist_customers_dataset(customer_id)
+
+
+alter table olist_order_items_dataset
+add constraint fk_item_order
+foreign key (order_id)
+references olist_orders_dataset(order_id)
+
+
+alter table olist_order_items_dataset
+add constraint fk_item_product
+foreign key (product_id)
+references olist_products_dataset(product_id)
+
+
+alter table olist_order_items_dataset
+add constraint fk_item_seller
+foreign key (seller_id)
+references olist_sellers_dataset(seller_id)
+
+
+alter table olist_order_payments_dataset
+add constraint fk_payment_order
+foreign key (order_id)
+references olist_orders_dataset(order_id)
