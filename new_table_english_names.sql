@@ -7,7 +7,6 @@ create table products_dataset_en as
 select
     p.product_id,
     t.product_category_name_english as product_category_name,
-    p.product_name_lenght,
     p.product_description_lenght,
     p.product_photos_qty,
     p.product_weight_g,
