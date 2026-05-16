@@ -62,7 +62,7 @@ from ranked
 where rn <= total * 0.01
 
 
---the descriptive statistics for the price
+--the descriptive statistics for the  price
 select
 	count(price) as count,
 	avg(price) as main,
