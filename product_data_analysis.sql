@@ -70,8 +70,8 @@ select
 	min(price) as min,
 	max(price) as max,
 	percentile_cont(0.25) within group(order by price) as q1,
-	percentile_cont(0.50) within group(order by price) as q1,	
-	percentile_cont(0.75) within group(order by price) as q1
+	percentile_cont(0.50) within group(order by price) as q2,	
+	percentile_cont(0.75) within group(order by price) as q3
 from olist_order_items_dataset
 
 	
@@ -83,8 +83,8 @@ select
 	min(freight_value) as min,
 	max(freight_value) as max,
 	percentile_cont(0.25) within group(order by freight_value) as q1,
-	percentile_cont(0.50) within group(order by freight_value) as q1,	
-	percentile_cont(0.75) within group(order by freight_value) as q1
+	percentile_cont(0.50) within group(order by freight_value) as q2,	
+	percentile_cont(0.75) within group(order by freight_value) as q3
 from olist_order_items_dataset
 
 
