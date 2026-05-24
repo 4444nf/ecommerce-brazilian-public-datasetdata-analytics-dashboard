@@ -1,0 +1,120 @@
+--What is the delivery rate?
+
+select 
+	round( 
+		count(*)* 100.0 / 
+		(
+			select count(*) 
+			from olist_orders_dataset 
+		), 2) as delivery_rate 
+from olist_orders_dataset
+where order_status = 'delivered' and order_approved_at is not null
+
+
+
+--How does the delivery rate changes over time?
+
+select count(order_id), date(order_purchase_timestamp) as date
+from olist_orders_dataset
+where order_status = 'delivered'
+group by date
+
+with delivery_count_daily as 
+(
+	select 
+		count(*) as total_ordered, 
+		date(order_purchase_timestamp) as order_date,
+		count(*) filter (where order_status ='delivered') as delivered_orders
+	from olist_orders_dataset
+	group by date(order_purchase_timestamp)
+)
+select order_date, round(delivered_orders*100.0/total_ordered,2) as delivery_rate
+from delivery_count_daily
+order by order_date
+
+--optimal version
+select
+  date_trunc('month', order_purchase_timestamp) as month,
+  count(*) filter (where order_status = 'delivered') * 100.0 / count(*) as delivery_rate
+from olist_orders_dataset
+group by 1
+order by 1
+
+
+--What is the average approval time?
+
+select 
+	avg(order_approved_at::timestamp - order_purchase_timestamp::timestamp), 
+from olist_orders_dataset
+where order_approved_at is not null
+
+--How does the average approval time change over time?
+
+select 
+	avg(order_approved_at::timestamp - order_purchase_timestamp::timestamp), 
+	order_purchase_timestamp::date as order_date
+from olist_orders_dataset
+where order_approved_at is not null and order_status = 'delivered'
+group by order_purchase_timestamp::date
+
+
+--optimal version
+select
+  date_trunc('month', order_purchase_timestamp) as month,
+  avg(order_approved_at - order_purchase_timestamp) as avg_approval_time
+from olist_orders_dataset
+where order_approved_at is not null
+group by 1
+
+--What is the average carrier delivered time since approval?
+
+select 
+	avg(order_delivered_customer_date::timestamp - order_approved_at::timestamp)
+from olist_orders_dataset
+where order_approved_at is not null and order_status = 'delivered'
+
+--How does the average carrier delivered time change over time?
+
+select 
+	avg(order_delivered_customer_date::timestamp - order_approved_at::timestamp), 
+	order_purchase_timestamp::date as delivered_date
+from olist_orders_dataset
+where order_approved_at is not null and order_status = 'delivered'
+group by order_purchase_timestamp::date
+
+--optimal version
+select
+  date_trunc('month', order_purchase_timestamp) as month,
+  avg(order_delivered_customer_date - order_delivered_carrier_date) as avg_carrier_time
+from olist_orders_dataset
+where order_delivered_carrier_date is not null
+  and order_delivered_customer_date is not null
+group by 1
+
+
+--What is the average delivery time of the carrier?
+
+select 
+	avg(order_delivered_customer_date::timestamp - order_delivered_carrier_date::timestamp)
+from olist_orders_dataset
+where order_delivered_carrier_date is not null
+
+--How does the average delivery time of the carrier change over time?
+
+select 
+	avg(order_delivered_customer_date::timestamp - order_delivered_carrier_date::timestamp), 
+	order_delivered_customer_date::date as delivered_date
+from olist_orders_dataset
+where order_delivered_carrier_date is not null
+  	and order_delivered_customer_date is not null
+  	and order_status = 'delivered'
+group by order_delivered_customer_date::date
+
+--optimal version
+select
+  date_trunc('month', order_purchase_timestamp) as month,
+  avg(order_delivered_customer_date - order_approved_at) as avg_total_time
+from olist_orders_dataset
+where order_approved_at is not null
+  and order_delivered_customer_date is not null
+group by 1
